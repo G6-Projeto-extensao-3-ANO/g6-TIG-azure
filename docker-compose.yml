@@ -31,15 +31,35 @@ services:
     image: grafana/grafana-oss:latest
     container_name: iot-grafana
     environment:
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana/
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/iotrace.json
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      INFLUXDB_TOKEN: TokenSecretoEstaticoParaOTelegraf2026LabIoT
+      GF_DASHBOARDS_MIN_REFRESH_INTERVAL: "2s"
+      GF_USERS_DEFAULT_THEME: light
     volumes:
       - grafana_data:/var/lib/grafana
-    depends_on:
-      - influxdb
-    networks:
-      - iot-network
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [influxdb]
+    networks: [iot-network]
     restart: unless-stopped
+
+#  grafana:
+#    image: grafana/grafana-oss:latest
+#    container_name: iot-grafana
+#    environment:
+#      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana/
+#      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+#    volumes:
+#      - grafana_data:/var/lib/grafana
+#    depends_on:
+#      - influxdb
+#    networks:
+#      - iot-network
+#    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
