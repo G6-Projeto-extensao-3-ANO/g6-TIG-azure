@@ -17,7 +17,7 @@ data "terraform_remote_state" "rede" {
   backend = "local"
 
   config = {
-    path = "../Rede/terraform.tfstate"
+    path = "../g6-network-azure/terraform.tfstate"
   }
 }
 
