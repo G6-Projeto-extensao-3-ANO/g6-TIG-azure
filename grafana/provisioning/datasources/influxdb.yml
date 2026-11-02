@@ -1,0 +1,16 @@
+apiVersion: 1
+datasources:
+  - name: InfluxDB - Telemetria
+    uid: iotrace-influxdb
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: faculdade
+      defaultBucket: sensores
+      maxSeries: 1000
+    secureJsonData:
+      token: $INFLUXDB_TOKEN
+    editable: true
