@@ -71,12 +71,44 @@ services:
     depends_on:
       - influxdb
       - grafana
+      - node-red
     networks:
       - iot-network
+      - app_net
     restart: unless-stopped
+
+    node-red:
+      image: nodered/node-red:latest
+      restart: unless-stopped
+      environment:
+        - TZ=America/Sao_Paulo
+      volumes:
+        - node_red_data:/data
+      networks:
+        - app_net
+      expose:
+        - "1880"
+
+  #nginx:
+  #  image: nginx:stable-alpine
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - node-red
+  #  ports:
+  #    - "80:80"
+  #  volumes:
+  #    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+  #  networks:
+  #    - app_net
+
+
+
+
 
 networks:
   iot-network:
+    driver: bridge
+  app-net:
     driver: bridge
 
 volumes:
