@@ -17,3 +17,9 @@ locals {
     : file(pathexpand(var.ssh_public_key_path))
   )
 }
+
+variable "vm_size" {
+  type        = string
+  default     = "Standard_B2as_v2"
+  description = "Tamanho da VM do Worker (TIG). O script apply-com-fallback.ps1 troca este valor se faltar capacidade na região."
+}

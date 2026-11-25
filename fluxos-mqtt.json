@@ -1,0 +1,313 @@
+[
+  {
+    "id": "tab1",
+    "type": "tab",
+    "label": "MQTT - Sensores",
+    "disabled": false,
+    "info": "Fluxo 1: MQTT IN > SWITCH (temperatura do arrefecimento > 95 C) > DEBUG\nFluxo 2: MQTT IN > SWITCH > BATCH (15) > DEBUG\nFluxo 3: MQTT IN > SWITCH > FUNCTION (15) > DEBUG"
+  },
+  {
+    "id": "broker1",
+    "type": "mqtt-broker",
+    "name": "Mosquitto Azure",
+    "broker": "57.156.59.143",
+    "port": "1883",
+    "clientid": "",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
+  },
+  {
+    "id": "c1",
+    "type": "comment",
+    "z": "tab1",
+    "name": "FLUXO 1: MQTT IN > SWITCH (arrefecimento > 95 C) > DEBUG",
+    "info": "",
+    "x": 290,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "in1",
+    "type": "mqtt in",
+    "z": "tab1",
+    "name": "MQTT IN",
+    "topic": "clientes/+/veiculos/+/telemetria",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "broker1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 130,
+    "y": 120,
+    "wires": [
+      [
+        "sw1",
+        "dbgraw"
+      ]
+    ]
+  },
+  {
+    "id": "dbgraw",
+    "type": "debug",
+    "z": "tab1",
+    "name": "Fluxo 1 - conexao (todas as mensagens)",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 440,
+    "y": 80,
+    "wires": []
+  },
+  {
+    "id": "sw1",
+    "type": "switch",
+    "z": "tab1",
+    "name": "arrefecimento > 95 C",
+    "property": "payload.metricas.temperatura_arrefecimento.temperatura_arrefecimento_c",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "gt",
+        "v": "95",
+        "vt": "num"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 330,
+    "y": 140,
+    "wires": [
+      [
+        "dbg1"
+      ]
+    ]
+  },
+  {
+    "id": "dbg1",
+    "type": "debug",
+    "z": "tab1",
+    "name": "Fluxo 1 - filtrado",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 560,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "c2",
+    "type": "comment",
+    "z": "tab1",
+    "name": "FLUXO 2: MQTT IN > SWITCH > BATCH (15 medicoes) > DEBUG",
+    "info": "",
+    "x": 300,
+    "y": 240,
+    "wires": []
+  },
+  {
+    "id": "in2",
+    "type": "mqtt in",
+    "z": "tab1",
+    "name": "MQTT IN",
+    "topic": "clientes/+/veiculos/+/telemetria",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "broker1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 130,
+    "y": 300,
+    "wires": [
+      [
+        "sw2"
+      ]
+    ]
+  },
+  {
+    "id": "sw2",
+    "type": "switch",
+    "z": "tab1",
+    "name": "arrefecimento > 95 C",
+    "property": "payload.metricas.temperatura_arrefecimento.temperatura_arrefecimento_c",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "gt",
+        "v": "95",
+        "vt": "num"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 330,
+    "y": 300,
+    "wires": [
+      [
+        "bt2"
+      ]
+    ]
+  },
+  {
+    "id": "bt2",
+    "type": "batch",
+    "z": "tab1",
+    "name": "Lote de 15",
+    "mode": "count",
+    "count": "15",
+    "overlap": 0,
+    "interval": 10,
+    "allowEmptySequence": false,
+    "topics": [],
+    "x": 530,
+    "y": 300,
+    "wires": [
+      [
+        "dbg2"
+      ]
+    ]
+  },
+  {
+    "id": "dbg2",
+    "type": "debug",
+    "z": "tab1",
+    "name": "Fluxo 2 - lote (BATCH)",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 740,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "c3",
+    "type": "comment",
+    "z": "tab1",
+    "name": "FLUXO 3: MQTT IN > SWITCH > FUNCTION (15 medicoes) > DEBUG",
+    "info": "",
+    "x": 310,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "in3",
+    "type": "mqtt in",
+    "z": "tab1",
+    "name": "MQTT IN",
+    "topic": "clientes/+/veiculos/+/telemetria",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "broker1",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 130,
+    "y": 460,
+    "wires": [
+      [
+        "sw3"
+      ]
+    ]
+  },
+  {
+    "id": "sw3",
+    "type": "switch",
+    "z": "tab1",
+    "name": "arrefecimento > 95 C",
+    "property": "payload.metricas.temperatura_arrefecimento.temperatura_arrefecimento_c",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "gt",
+        "v": "95",
+        "vt": "num"
+      }
+    ],
+    "checkall": "true",
+    "repair": false,
+    "outputs": 1,
+    "x": 330,
+    "y": 460,
+    "wires": [
+      [
+        "fn3"
+      ]
+    ]
+  },
+  {
+    "id": "fn3",
+    "type": "function",
+    "z": "tab1",
+    "name": "Acumula 15",
+    "func": "const LIMITE = 15;\nconst buffer = context.get('buffer') || [];\nbuffer.push(msg);\n\nif (buffer.length < LIMITE) {\n    // Ainda nao chegou em 15: guarda e nao envia nada\n    context.set('buffer', buffer);\n    node.status({fill: 'yellow', shape: 'ring', text: buffer.length + '/' + LIMITE});\n    return null;\n}\n\n// Chegou em 15: limpa o buffer e envia as 15 mensagens de uma vez\ncontext.set('buffer', []);\nnode.status({fill: 'green', shape: 'dot', text: 'lote de ' + LIMITE + ' enviado'});\nreturn [buffer];",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 530,
+    "y": 460,
+    "wires": [
+      [
+        "dbg3"
+      ]
+    ]
+  },
+  {
+    "id": "dbg3",
+    "type": "debug",
+    "z": "tab1",
+    "name": "Fluxo 3 - lote (FUNCTION)",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 750,
+    "y": 460,
+    "wires": []
+  }
+]
